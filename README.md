@@ -1,0 +1,1 @@
+# Simple visualizer plugin for Nessie
