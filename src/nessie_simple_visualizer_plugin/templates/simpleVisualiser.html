@@ -70,18 +70,20 @@ nodeGroups.each(function(d) {
 const nodeIndex = {};
 GRAPH_DATA.nodes.forEach((n, i) => { nodeIndex[n.id] = i; });
 
-layerEdges.selectAll('.edge')
+let edges = layerEdges.selectAll('.edge')
   .data(GRAPH_DATA.edges)
   .join('line')
   .attr('edge',         '')
   .attr('class',        'edge')
   .attr('stroke',       '#475569')
   .attr('stroke-width', 1.5)
-  .attr('marker-end',   'url(#arrowhead)')
   .attr('data-source',  d => nodeIndex[d.source])
   .attr('data-target',  d => nodeIndex[d.target])
   .attr('x1', d => nodeMap[d.source].x)
   .attr('y1', d => nodeMap[d.source].y)
   .attr('x2', d => nodeMap[d.target].x)
   .attr('y2', d => nodeMap[d.target].y);
+  if(GRAPH_DATA.type === 'directed') {
+    edges.attr('marker-end', 'url(#arrowhead)');
+  }
 </script>

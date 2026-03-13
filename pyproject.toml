@@ -25,8 +25,10 @@ classifiers = [
     "Topic :: Software Development :: Libraries :: Python Modules",
 ]
 dependencies = [
-    "nessie-api>=0.1.0",
+    "nessie-api @ git+https://github.com/Nessie-org/nessie-api.git",
 ]
+[tool.hatch.metadata]
+allow-direct-references = true
 
 [project.optional-dependencies]
 dev = [
@@ -79,3 +81,8 @@ exclude_lines = [
 
 [tool.uv.sources]
 nessie-api = { git = "https://github.com/Nessie-org/nessie-api.git" }
+
+packages = ["src/nessie_simple_visualizer_plugin"]
+
+[project.entry-points."nessie_plugins"]
+nessie_simple_visualiser = "nessie_graph_visualiser_simple:neisse_graph_visualiser_simple_plugin"
