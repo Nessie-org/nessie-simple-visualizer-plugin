@@ -1,10 +1,10 @@
-from nessie_api.models import Plugin, Action, plugin , Graph, Node, Edge, Attribute
+from nessie_api.models import Plugin, Action, plugin , Graph, Node, Edge, Attribute,GraphType
 import json
 import os
 
 
 
-def visualise_graph_handler(action: Action):
+def visualise_graph_handler(action: Action, context) -> str:
     graph_data = action.payload
     #Ensure the payload has to_dict method, which is expected for Graph objects
     if not hasattr(graph_data, "to_dict") or not callable(getattr(graph_data, "to_dict")):
@@ -22,8 +22,8 @@ def visualise_graph_handler(action: Action):
 
 
 
-@plugin(name="Visualiser Block", verbose=False)
-def neisse_graph_visualiser_block_plugin():
+@plugin(name="Visualiser Simple", verbose=False)
+def neisse_graph_visualiser_simple_plugin():
     handlers = {
         "visualise_graph": visualise_graph_handler,
     }
@@ -38,9 +38,9 @@ def neisse_graph_visualiser_block_plugin():
     return ret_dict
 
 if __name__ == "__main__": 
-    plugin_instance = neisse_graph_visualiser_block_plugin()
+    plugin_instance = neisse_graph_visualiser_simple_plugin()
     print(f"Plugin '{plugin_instance.name}' initialized with actions: {plugin_instance.provided_actions}")
-    graph = Graph("Test Graph")
+    graph = Graph("Test Graph", graph_type=GraphType.DIRECTED)
     node_a = Node("A", attributes={"label": Attribute("label", "Node A")})
     node_b = Node("B", attributes={"label": Attribute("label", "Node B")})
     node_c = Node("C", attributes={"label": Attribute("label", "Node C")})
@@ -51,7 +51,7 @@ if __name__ == "__main__":
     graph.add_edge(Edge("edge3",source=node_b, target=node_c))
 
     action = Action(name="visualise_graph", payload=graph)
-    result = plugin_instance.handle(action)
+    result = plugin_instance.handle(action, context={})
     graph_name = graph.name.replace(" ", "-").lower()
     #The result is svg context that is here going to be added to html block and saved as html file
     html_content =    """
