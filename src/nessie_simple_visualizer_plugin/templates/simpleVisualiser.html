@@ -1,0 +1,87 @@
+<svg id="main_view" xmlns="http://www.w3.org/2000/svg" style="width:100%;height:100%;">
+  <defs>
+    <marker id="arrowhead" markerWidth="8" markerHeight="6"
+      refX="8" refY="3" orient="auto">
+      <polygon points="0 0, 8 3, 0 6" fill="#475569"/>
+    </marker>
+  </defs>
+  <g id="edges"></g>
+  <g id="nodes"></g>
+</svg>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/d3/7.8.5/d3.min.js"></script>
+<script>
+const GRAPH_DATA = __GRAPH_DATA__;
+const CHAR_WIDTH = 7;
+const MIN_RADIUS = 20;
+const PADDING    = 12;
+
+const svg = document.getElementById('main_view');
+const W = svg.clientWidth  || document.documentElement.clientWidth  || 800;
+const H = svg.clientHeight || document.documentElement.clientHeight || 600;
+
+const layerEdges = d3.select('#edges');
+const layerNodes = d3.select('#nodes');
+const nodeMap    = {};
+
+GRAPH_DATA.nodes.forEach(n => {
+  n.radius = Math.max(MIN_RADIUS, (n.id.length * CHAR_WIDTH) / 2 + PADDING);
+  n.x = Math.random() * W * 0.7 + W * 0.1;
+  n.y = Math.random() * H * 0.7 + H * 0.1;
+  nodeMap[n.id] = n;
+});
+
+const nodeGroups = layerNodes.selectAll('.node')
+  .data(GRAPH_DATA.nodes)
+  .join('g')
+  .attr('class',     'node')
+  .attr('node',      '')
+  // translate to TOP-LEFT so physics script computes center correctly as x + w/2
+  .attr('transform', d => `translate(${d.x - d.radius},${d.y - d.radius})`);
+
+nodeGroups.each(function(d) {
+  const g = d3.select(this);
+  // rect at (0,0) sized radius*2 — physics reads this for w/h
+  g.append('rect')
+    .attr('x',      0)
+    .attr('y',      0)
+    .attr('width',  d.radius * 2)
+    .attr('height', d.radius * 2)
+    .attr('fill',   'none')
+    .attr('stroke', 'none');
+  // circle centered within the rect
+  g.append('circle')
+    .attr('cx',           d.radius)
+    .attr('cy',           d.radius)
+    .attr('r',            d.radius)
+    .attr('fill',         '#1e2130')
+    .attr('stroke',       '#3b82f6')
+    .attr('stroke-width', 1.5);
+  g.append('text')
+    .attr('x',                 d.radius)
+    .attr('y',                 d.radius)
+    .attr('text-anchor',       'middle')
+    .attr('dominant-baseline', 'central')
+    .attr('font-size',         '12px')
+    .attr('font-family',       'monospace')
+    .attr('fill',              '#ffffff')
+    .text(d.id);
+});
+
+const nodeIndex = {};
+GRAPH_DATA.nodes.forEach((n, i) => { nodeIndex[n.id] = i; });
+
+layerEdges.selectAll('.edge')
+  .data(GRAPH_DATA.edges)
+  .join('line')
+  .attr('edge',         '')
+  .attr('class',        'edge')
+  .attr('stroke',       '#475569')
+  .attr('stroke-width', 1.5)
+  .attr('marker-end',   'url(#arrowhead)')
+  .attr('data-source',  d => nodeIndex[d.source])
+  .attr('data-target',  d => nodeIndex[d.target])
+  .attr('x1', d => nodeMap[d.source].x)
+  .attr('y1', d => nodeMap[d.source].y)
+  .attr('x2', d => nodeMap[d.target].x)
+  .attr('y2', d => nodeMap[d.target].y);
+</script>
