@@ -5,9 +5,7 @@ build-backend = "hatchling.build"
 [project]
 name = "nessie-simple-visualizer-plugin"
 version = "0.1.0"
-description = "Nessie Simple Visualizer Plugin - A Python package for simple graph visualization plugin"
-readme = "README.md"
-license = { text = "Apache-2.0" }
+description = "A plugin for simple graph visualisation."
 requires-python = ">=3.9"
 authors = [
     { name = "Viktorija Avanesova", email = "viktoriiaava@gmail.com" },
@@ -25,10 +23,8 @@ classifiers = [
     "Topic :: Software Development :: Libraries :: Python Modules",
 ]
 dependencies = [
-    "nessie-api @ git+https://github.com/Nessie-org/nessie-api.git",
+    "nessie-api>=0.1.0",
 ]
-[tool.hatch.metadata]
-allow-direct-references = true
 
 [project.optional-dependencies]
 dev = [
@@ -44,8 +40,14 @@ Homepage = "https://github.com/Nessie-org/nessie-simple-visualizer-plugin"
 Repository = "https://github.com/Nessie-org/nessie-simple-visualizer-plugin"
 Issues = "https://github.com/Nessie-org/nessie-simple-visualizer-plugin/issues"
 
+[tool.hatch.metadata]
+allow-direct-references = true
+
 [tool.hatch.build.targets.wheel]
 packages = ["src/nessie_simple_visualizer_plugin"]
+
+[project.entry-points."nessie_plugins"]
+nessie_simple_visualizer = "nessie_simple_visualizer_plugin:neisse_graph_visualiser_simple_plugin"
 
 [tool.black]
 line-length = 88
@@ -78,11 +80,3 @@ exclude_lines = [
     "if TYPE_CHECKING:",
     "raise NotImplementedError",
 ]
-
-[tool.uv.sources]
-nessie-api = { git = "https://github.com/Nessie-org/nessie-api.git" }
-
-packages = ["src/nessie_simple_visualizer_plugin"]
-
-[project.entry-points."nessie_plugins"]
-nessie_simple_visualiser = "nessie_graph_visualiser_simple:neisse_graph_visualiser_simple_plugin"
