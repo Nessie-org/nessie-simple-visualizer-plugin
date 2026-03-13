@@ -25,7 +25,7 @@ classifiers = [
     "Topic :: Software Development :: Libraries :: Python Modules",
 ]
 dependencies = [
-    "nessie_api>=0.1.0",
+    "nessie-api>=0.1.0",
 ]
 
 [project.optional-dependencies]
@@ -76,3 +76,6 @@ exclude_lines = [
     "if TYPE_CHECKING:",
     "raise NotImplementedError",
 ]
+
+[tool.uv.sources]
+nessie-api = { git = "https://github.com/Nessie-org/nessie-api.git" }
